@@ -32,7 +32,6 @@ const io = new Server(server, {
   },
 });
 
-
 io.on("connection", (socket) => {
   console.log(socket.id);
   let localTimer = 0;
@@ -40,10 +39,10 @@ io.on("connection", (socket) => {
     time = new Date();
     localTimer = new Date() - time;
     hostSocketId = socket.id;
-    io.to(hostSocketId).emit('joinGame' , {time: localTimer, word});
+    io.to(hostSocketId).emit('joinGame' , {time: localTimer, word, hostSocketId});
   }else{
     let localTimer = Math.floor((new Date() - time)/1000)%60;
-    io.to(socket.id).emit('joinGame' , {time: localTimer, word});
+    io.to(socket.id).emit('joinGame' , {time: localTimer, word, hostSocketId});
   }
 
   // socket.on("room:join", (data) => {
