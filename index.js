@@ -1,8 +1,10 @@
-const express = require("express");
+import express from "express";
+import http from "http";
+import {Server} from "socket.io";
+import cors from "cors";
+import { joinRoom } from "./controllers/room.js";
+
 const app = express();
-const http = require("http");
-const { Server } = require("socket.io");
-const cors = require("cors");
 
 app.use(cors());
 
@@ -23,7 +25,8 @@ const wordsArray = [
 
 let hostSocketId = null;
 let time = 0;
-let word = wordsArray[Math.floor(Math.random() * wordsArray.length)];;
+let localTimer = 0;
+let word = wordsArray[Math.floor(Math.random() * wordsArray.length)];
 
 const io = new Server(server, {
   cors: {
@@ -33,27 +36,26 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log(socket.id);
-  let localTimer = 0;
-  if(hostSocketId === null){
+  // console.log(socket.id);  
+
+  if (hostSocketId === null) {
     time = new Date();
     localTimer = new Date() - time;
     hostSocketId = socket.id;
-    io.to(hostSocketId).emit('joinGame' , {time: localTimer, word, hostSocketId});
-  }else{
-    let localTimer = Math.floor((new Date() - time)/1000)%60;
-    io.to(socket.id).emit('joinGame' , {time: localTimer, word, hostSocketId});
+    io.to(hostSocketId).emit('joinGame', { time: localTimer, word, hostSocketId });
+  } else {
+    let localTimer = Math.floor((new Date() - time) / 1000) % 60;
+    io.to(socket.id).emit('joinGame', { time: localTimer, word, hostSocketId });
   }
 
-  // socket.on("room:join", (data) => {
-  //   const { email, room } = data;
-  //   emailToSocketIdMap.set(email, socket.id);
-  //   socketidToEmailMap.set(socket.id, email);
-
-  //   io.to(room).emit("user:joined", { email, id: socket.id });
-  //   socket.join(room);
-  //   io.to(socket.id).emit("room:join", data);
-  // });
+  socket.on('changeWordReq', () => {
+    if(hostSocketId === socket.id){
+      word = wordsArray[Math.floor(Math.random() * wordsArray.length)];
+      console.log(word);
+      
+      io.emit('changeWordRes', word);
+    }
+  })
 
   socket.on("send_message", (data) => {
     socket.broadcast.emit("receive_mesage", data);
