@@ -2,13 +2,14 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "moment": "^2.30.1",
     "socket.io": "^4.7.2"
   },
   "name": "socket",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
-    "scripts": {
+  "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
