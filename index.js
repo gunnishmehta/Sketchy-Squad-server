@@ -64,7 +64,7 @@ io.on("connection", (socket) => {
       word = wordsArray[Math.floor(Math.random() * wordsArray.length)];
       console.log(word);
       
-      io.emit('changeWordRes', word);
+      io.emit('changeWordRes', {word, hostSocketId});
     }
   })
 
