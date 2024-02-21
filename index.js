@@ -1,9 +1,9 @@
 import express from "express";
 import http from "http";
-import {Server} from "socket.io";
+import { Server } from "socket.io";
 import cors from "cors";
 import { formatMessage } from "./utils/messages.js";
-import { userJoin, userLeave } from "./utils/users.js";
+import { checkForHost, getUserSize, userJoin, userLeave } from "./utils/users.js";
 
 const app = express();
 
@@ -41,6 +41,7 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
+  console.log('socket1: ', socket.id)
 
   userSocketIds.push(socket.id);
 
@@ -56,31 +57,28 @@ io.on("connection", (socket) => {
 
   userJoin(socket.id, 'Abcd', 1234);
 
-  socket.on("joinRoom", ({username, room})=>{
+  socket.on("joinRoom", ({ username, room }) => {
     const user = userJoin(socket.id, username, room);
 
     socket.join(user.room);
-    
+
     //welcome current user
     socket.emit('message', formatMessage(botName, 'Welcome to Sketchy squad'));
   })
 
   //change word
   socket.on('changeWordReq', () => {
-    if(hostSocketId === socket.id && changeRequest){
+    if (hostSocketId === socket.id && changeRequest) {
       word = wordsArray[Math.floor(Math.random() * wordsArray.length)];
-      console.log(word);
+      // console.log(word);
       hostIndex++;
       hostIndex++;
       hostIndex = hostIndex % userSocketIds.length;
-      console.log('the new host socket index: ', hostIndex);
       hostSocketId = userSocketIds[hostIndex];
 
-      console.log('the new host socket id: ', hostSocketId);
-      
-      io.emit('changeWordRes', {word, hostSocketId});
+      io.emit('changeWordRes', { word, hostSocketId });
       changeRequest = false;
-      setTimeout(()=>{
+      setTimeout(() => {
         changeRequest = true
       }, 5000);
     }
@@ -90,20 +88,42 @@ io.on("connection", (socket) => {
   socket.on("send_message", (data) => {
     io.emit("receive_mesage", formatMessage(botName, data));
   });
-  
+
   // recieve canvas from host and send to others
   socket.on("sendCanvasData", (data) => {
     socket.broadcast.emit("recieveCanvasData", data);
   });
 
-  socket.on("disconnect", ()=>{
+  socket.on("disconnect", () => {
     const user = userLeave(socket.id);
-    
-    if(user){
-      io.to(user.room).emit("message", formatMessage(botName, `${user.username} has left the chat`));
+    const size = getUserSize();
+    userSocketIdsLeave(socket.id);
+    if (!checkForHost(hostSocketId)) {
+      hostIndex = 0;
+      hostSocketId = userSocketIds[hostIndex]
+      // io.hostSocketId.emit("receive_mesage", formatMessage(botName,  `Your are now the host`))
+      console.log(hostSocketId)
+      console.log('host left');
     }
-  })
+    if (size === 0) {
+      hostSocketId = null;
+      console.log('set to null');
+    }
+    if (user) {
+      io.to(user.room).emit("receive_mesage", formatMessage(botName, `${user.username} has left the chat`));
+    }
+  });
+
 });
+
+function userSocketIdsLeave(id) {
+  const index = userSocketIds.findIndex(userId => userId === id); // Corrected comparison
+
+  if (index !== -1) {
+    return userSocketIds.splice(index, 1)[0];
+  }
+}
+
 
 server.listen(3001, () => {
   console.log("SERVER IS RUNNING");

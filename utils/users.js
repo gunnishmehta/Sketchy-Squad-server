@@ -3,7 +3,6 @@ const users = [];
 export function userJoin(id, username, room){
     const user = {id, username, room};
     users.push(user);
-    console.log(users);
 
     return user;
 }
@@ -20,7 +19,15 @@ export function userLeave(id){
     }
 }
 
-export function getRoomUsers(room){
-    return users.filter(user => user.room === room);
+export function checkForHost(id){
+    const index = users.findIndex(user => user.id === id);
+    if(index === -1){
+        return false;
+    }else{
+        return true;
+    }
 }
 
+export function getUserSize(){
+    return users.length;
+}
