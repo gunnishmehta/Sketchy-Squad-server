@@ -4,6 +4,9 @@ import { Server } from "socket.io";
 import cors from "cors";
 import { formatMessage } from "./utils/messages.js";
 import { checkForHost, getUserSize, userJoin, userLeave } from "./utils/users.js";
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const app = express();
 
