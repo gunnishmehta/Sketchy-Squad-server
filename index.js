@@ -10,13 +10,13 @@ dotenv.config()
 
 const app = express();
 
-// app.use(cors());
-app.use(function(req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
+const corsOptions = {
+  origin: process.env.FRONTEND_URL, // Replace with your frontend URL
+  methods: ['GET', 'POST'], // Allow only specific HTTP methods
+  credentials: true, // Allow credentials (e.g., cookies, authorization headers)
+};
+
+app.use(cors(corsOptions));
 
 const server = http.createServer(app);
 
