@@ -11,9 +11,9 @@ dotenv.config()
 const app = express();
 
 const corsOptions = {
-  origin: process.env.FRONTEND_URL, // Replace with your frontend URL
-  methods: ['GET', 'POST'], // Allow only specific HTTP methods
-  credentials: true, // Allow credentials (e.g., cookies, authorization headers)
+  origin: process.env.FRONTEND_URL,
+  methods: ['GET', 'POST'],
+  credentials: true, 
 };
 
 app.use(cors(corsOptions));
@@ -71,7 +71,6 @@ io.on("connection", (socket) => {
 
     socket.join(user.room);
 
-    //welcome current user
     socket.emit('message', formatMessage(botName, 'Welcome to Sketchy squad'));
   })
 
@@ -79,7 +78,6 @@ io.on("connection", (socket) => {
   socket.on('changeWordReq', () => {
     if (hostSocketId === socket.id && changeRequest) {
       word = wordsArray[Math.floor(Math.random() * wordsArray.length)];
-      // console.log(word);
       hostIndex++;
       hostIndex++;
       hostIndex = hostIndex % userSocketIds.length;
@@ -93,7 +91,7 @@ io.on("connection", (socket) => {
     }
   })
 
-  // recieve chat from someone and send to others
+
   socket.on("send_message", (data) => {
     io.emit("receive_mesage", formatMessage(botName, data));
   });
@@ -126,13 +124,16 @@ io.on("connection", (socket) => {
 });
 
 function userSocketIdsLeave(id) {
-  const index = userSocketIds.findIndex(userId => userId === id); // Corrected comparison
+  const index = userSocketIds.findIndex(userId => userId === id); 
 
   if (index !== -1) {
     return userSocketIds.splice(index, 1)[0];
   }
 }
 
+app.get('/', (req, res)=>{
+  res.send('Welcome to Sketchy Squad.')
+})
 
 server.listen(3001, () => {
   console.log("SERVER IS RUNNING");
