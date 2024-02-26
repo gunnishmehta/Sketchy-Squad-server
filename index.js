@@ -10,15 +10,15 @@ dotenv.config()
 
 const app = express();
 
+const server = http.createServer(app);
+
 const corsOptions = {
   origin: process.env.FRONTEND_URL,
   methods: ['GET', 'POST'],
   credentials: true, 
 };
 
-app.use(cors(corsOptions));
-
-const server = http.createServer(app);
+app.use(cors());
 
 const wordsArray = [
   'apple',
@@ -42,12 +42,7 @@ const botName = 'Sketchy Squad';
 let userSocketIds = [];
 let changeRequest = true;
 
-const io = new Server(server, {
-  cors: {
-    origin: process.env.FRONTEND_URL,
-    methods: ["GET", "POST"],
-  },
-});
+const io = new Server(server);
 
 io.on("connection", (socket) => {
   console.log('socket1: ', socket.id)
