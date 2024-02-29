@@ -1,5 +1,5 @@
 import express from "express";
-import http from "http";
+import {createServer} from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import { formatMessage } from "./utils/messages.js";
@@ -7,18 +7,6 @@ import { checkForHost, getUserSize, userJoin, userLeave } from "./utils/users.js
 import dotenv from 'dotenv'
 
 dotenv.config()
-
-const app = express();
-
-const server = http.createServer(app);
-
-const corsOptions = {
-  origin: process.env.FRONTEND_URL,
-  methods: ['GET', 'POST'],
-  credentials: true, 
-};
-
-app.use(cors());
 
 const wordsArray = [
   'apple',
@@ -42,7 +30,12 @@ const botName = 'Sketchy Squad';
 let userSocketIds = [];
 let changeRequest = true;
 
-const io = new Server(server);
+const httpServer = createServer();
+const io = new Server(httpServer, {
+  cors:{
+    origin: process.env.FRONTEND_URL
+  }
+});
 
 io.on("connection", (socket) => {
   console.log('socket1: ', socket.id)
@@ -130,6 +123,6 @@ app.get('/', (req, res)=>{
   res.send('Welcome to Sketchy Squad.')
 })
 
-server.listen(3001, () => {
+httpServer.listen(3001, () => {
   console.log("SERVER IS RUNNING");
 });
