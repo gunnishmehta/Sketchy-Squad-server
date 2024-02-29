@@ -119,10 +119,6 @@ function userSocketIdsLeave(id) {
   }
 }
 
-app.get('/', (req, res)=>{
-  res.send('Welcome to Sketchy Squad.')
-})
-
 httpServer.listen(3001, () => {
   console.log("SERVER IS RUNNING");
 });
