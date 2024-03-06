@@ -1,5 +1,5 @@
 import express from "express";
-import {createServer} from "http";
+import { createServer } from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import { formatMessage } from "./utils/messages.js";
@@ -32,8 +32,8 @@ let changeRequest = true;
 
 const httpServer = createServer();
 const io = new Server(httpServer, {
-  cors:{
-    "Access-Control-Allow-Origin": "*"
+  cors: {
+    origin: "*"
   }
 });
 
@@ -112,7 +112,7 @@ io.on("connection", (socket) => {
 });
 
 function userSocketIdsLeave(id) {
-  const index = userSocketIds.findIndex(userId => userId === id); 
+  const index = userSocketIds.findIndex(userId => userId === id);
 
   if (index !== -1) {
     return userSocketIds.splice(index, 1)[0];
