@@ -116,7 +116,8 @@ io.on("connection", (socket) => {
 });
 
 app.get('/', (req, res)=>{
-res.send(`${process.env.FRONTEND_URL}`)
+  res.send("Hello world");
+  console.log(`${process.env.FRONTEND_URL}`)
 })
 
 function userSocketIdsLeave(id) {
