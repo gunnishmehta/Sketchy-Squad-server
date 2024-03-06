@@ -33,7 +33,7 @@ let changeRequest = true;
 const httpServer = createServer();
 const io = new Server(httpServer, {
   cors:{
-    origin: "*"
+    "Access-Control-Allow-Origin": "*"
   }
 });
 
