@@ -8,6 +8,10 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
+const app = express();
+
+app.use(cors());
+
 const wordsArray = [
   'apple',
   'banana',
@@ -110,6 +114,10 @@ io.on("connection", (socket) => {
   });
 
 });
+
+app.get('/', (req, res)=>{
+res.send(`${process.env.FRONTEND_URL}`)
+})
 
 function userSocketIdsLeave(id) {
   const index = userSocketIds.findIndex(userId => userId === id);
