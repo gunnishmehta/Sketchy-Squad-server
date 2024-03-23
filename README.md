@@ -49,4 +49,5 @@ Start the server
 
 ## Demo
 
-* [Live Demo](https://collab4good-backend.onrender.com)
+![](https://github.com/gunnishmehta/Sketchy-Squad-server/blob/main/GIf-Demo.gif)
+* [Video](https://github.com/gunnishmehta/Sketchy-Squad-server/blob/main/Video-Demo.mp4)
